@@ -13,7 +13,7 @@ const startServer =async()=>{
         console.log(envVars.NODE_ENV)
 
         await mongoose.connect(envVars.DB_URL)
-        console.log("connect to db")
+        console.log("connect to db")        
         server = app.listen(envVars.PORT,()=>{
             console.log(`server listening to port ${envVars.PORT}`)
         })
