@@ -5,6 +5,8 @@ import { User } from "../user/user.model";
 import jwt from "jsonwebtoken"
 
 import  bcryptjs  from 'bcryptjs';
+import { generateToken } from "../../utils/jwt";
+import { envVars } from "../../../config/env";
 
 const credentialsLogin = async (payload:Partial<IUser>)=>{
     const {email,password} = payload;
@@ -23,10 +25,11 @@ const credentialsLogin = async (payload:Partial<IUser>)=>{
         email:isUserExist.email,
         role:isUserExist.role
     }
+    const accessToken = generateToken(jwtPayload,envVars.JWT_ACCESS_SECRET,envVars.JWT_ACCESS_EXPIRES)
 
-    const accessToken = jwt.sign(jwtPayload,"secret",{
-        expiresIn:"1d"
-    })
+    // const accessToken = jwt.sign(jwtPayload,"secret",{
+    //     expiresIn:"1d"
+    // })
    
     return {
         accessToken
