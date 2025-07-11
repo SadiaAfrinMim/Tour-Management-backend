@@ -1,0 +1,39 @@
+import AppError from "../../errorhelpers/AppError";
+import { IUser } from "../user/user.interface"
+import httpStatus  from 'http-status-codes';
+import { User } from "../user/user.model";
+import jwt from "jsonwebtoken"
+
+import  bcryptjs  from 'bcryptjs';
+
+const credentialsLogin = async (payload:Partial<IUser>)=>{
+    const {email,password} = payload;
+    const isUserExist = await User.findOne({email});
+    if(!isUserExist){
+        throw new AppError(httpStatus.BAD_REQUEST,"Email doesn't  Exist")
+    }
+    const isPasswordMatched = await bcryptjs.compare(password as string,isUserExist.password as string)
+
+    if(!isPasswordMatched){
+        throw new AppError(httpStatus.BAD_REQUEST,"Incorrect Password")
+    }
+
+    const jwtPayload = {
+        userId: isUserExist._id,
+        email:isUserExist.email,
+        role:isUserExist.role
+    }
+
+    const accessToken = jwt.sign(jwtPayload,"secret",{
+        expiresIn:"1d"
+    })
+   
+    return {
+        accessToken
+    }
+
+}
+
+export const AuthServices = {
+    credentialsLogin
+}
