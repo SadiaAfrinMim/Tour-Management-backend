@@ -36,7 +36,7 @@ export interface IUser {
     address?:string;
     isDeleted?:string;
     isActive?:IsActive;
-    isVerified?:string;
+    isVerified?:boolean;
 
     auths:IAuthProvider[]
     role:Role;
