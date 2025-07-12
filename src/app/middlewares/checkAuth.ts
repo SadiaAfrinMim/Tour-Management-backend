@@ -23,6 +23,7 @@ import { JwtPayload } from "jsonwebtoken";
         throw new AppError(403,"you are not permitted to view this route!!")
 
     }
+    req.user = verifiedToken
     
     next()
 
