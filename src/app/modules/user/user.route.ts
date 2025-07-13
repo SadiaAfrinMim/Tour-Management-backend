@@ -6,7 +6,7 @@ import { validateRequest } from "../../middlewares/validateRequest";
 import { checkAuth } from "../../middlewares/checkAuth";
 import { Router } from "express";
 import { Role } from "./user.interface";
-import { object } from "zod";
+
 
 
 
