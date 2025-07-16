@@ -96,7 +96,11 @@ const logOut = catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
 
 
 const resetPassword = catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
-//   const result = await UserServices. getAllUser();
+   
+   const newPassword = req.body.newPassword;
+   const oldPassword = req.body.oldPassword;
+   const decodedToken = req.user
+    await AuthServices.resetPassword(oldPassword,newPassword,decodedToken)
 
   
    sendResponse(res,{
@@ -117,5 +121,6 @@ const resetPassword = catchAsync(async(req:Request,res:Response,next:NextFunctio
 export const AuthControllers = {
     credentialsLogin,
     getNewAccessToken,
-    logOut
+    logOut,
+    resetPassword
 }

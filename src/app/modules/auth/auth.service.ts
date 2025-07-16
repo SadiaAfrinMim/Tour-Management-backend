@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import AppError from "../../errorhelpers/AppError";
 import { IsActive, IUser } from "../user/user.interface"
@@ -64,8 +65,24 @@ const getNewAccessToken = async (refreshToken: string)=>{
 }
 }
 
+const resetPassword = async (oldPassword:string,newPassword:string, decodedToken:JwtPayload)=>{
+    const user = await User.findById(decodedToken.userId)
+    const isOldPassWordMatch = await bcryptjs.compare(oldPassword, user!.password as string)
+    if(!isOldPassWordMatch){
+        throw new AppError(httpStatus.UNAUTHORIZED,"old password doest not match");
+        
+    }
+  user!.password =await bcryptjs.hash(newPassword, Number(envVars.BCRYPT_SALT_ROUND))
+  user!.save()
+
+
+  
+  
+}
+
 
 export const AuthServices = {
     credentialsLogin,
-    getNewAccessToken
+    getNewAccessToken,
+    resetPassword
 }
