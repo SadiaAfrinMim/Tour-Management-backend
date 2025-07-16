@@ -5,6 +5,7 @@ import { sendResponse } from "../../utils/sendResponse"
 import  httpStatus  from 'http-status-codes';
 import { AuthServices } from "./auth.service";
 import AppError from "../../errorhelpers/AppError";
+import { setAuthCookie } from "../../utils/setCookie";
 
 
 
@@ -16,14 +17,16 @@ const credentialsLogin = catchAsync(async(req:Request,res:Response,next:NextFunc
 
 const loginInfo = await AuthServices.credentialsLogin(req.body)
 
-res.cookie("accessToken",loginInfo.accessToken,{
-  httpOnly: true,
-  secure:false
-})
-res.cookie("refreshToken",loginInfo.refreshToken,{
-  httpOnly:true,
-  secure: false,
-})
+// res.cookie("accessToken",loginInfo.accessToken,{
+//   httpOnly: true,
+//   secure:false
+// })
+
+setAuthCookie(res,loginInfo)
+// res.cookie("refreshToken",loginInfo.refreshToken,{
+//   httpOnly:true,
+//   secure: false,
+// })
    sendResponse(res,{
     success:true,
     statusCode:httpStatus.OK,
@@ -47,11 +50,60 @@ if(!refreshToken){
   throw new AppError( httpStatus.BAD_REQUEST,"no refresh token recived from cookie")
 }
 const tokenInfo = await AuthServices.getNewAccessToken(refreshToken as string)
+
+// res.cookie("accessToken",tokenInfo.accessToken,{
+//   httpOnly:true,
+//   secure: false,
+// })
+setAuthCookie(res,tokenInfo)
    sendResponse(res,{
     success:true,
     statusCode:httpStatus.OK,
-    message:"user login successfully",
+    message:"New Access Token Retrived Successfully",
     data: tokenInfo,
+   
+  })
+
+
+
+})
+
+
+const logOut = catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
+//   const result = await UserServices. getAllUser();
+
+  res.clearCookie("accessToken",{
+    httpOnly:true,
+    secure:false,
+    sameSite:"lax"
+  })
+  res.clearCookie("refreshToken",{
+    httpOnly:true,
+    secure:false,
+    sameSite:"lax"
+  })
+   sendResponse(res,{
+    success:true,
+    statusCode:httpStatus.OK,
+    message:"User Logged Out successfully",
+    data: null,
+   
+  })
+
+
+
+})
+
+
+const resetPassword = catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
+//   const result = await UserServices. getAllUser();
+
+  
+   sendResponse(res,{
+    success:true,
+    statusCode:httpStatus.OK,
+    message:"User Logged Out successfully",
+    data: null,
    
   })
 
@@ -62,8 +114,8 @@ const tokenInfo = await AuthServices.getNewAccessToken(refreshToken as string)
 
 
 
-
 export const AuthControllers = {
     credentialsLogin,
-    getNewAccessToken
+    getNewAccessToken,
+    logOut
 }
