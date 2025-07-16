@@ -1,6 +1,6 @@
 
 
-import { envVars } from '../../config/env';
+import { envVars } from '../config/env';
 import {User} from '../modules/user/user.model'
 import { IUser, Role, IAuthProvider } from '../modules/user/user.interface';
 

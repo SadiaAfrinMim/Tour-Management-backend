@@ -8,7 +8,7 @@ import jwt, { JwtPayload } from "jsonwebtoken"
 
 import  bcryptjs  from 'bcryptjs';
 import { generateToken, verifyToken } from "../../utils/jwt";
-import { envVars } from "../../../config/env";
+import { envVars } from "../../config/env";
 import { createNewAccessTokenWithRefreshToken, createUserTokens } from "../../utils/userToken";
 
 const credentialsLogin = async (payload:Partial<IUser>)=>{

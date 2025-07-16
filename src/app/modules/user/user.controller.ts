@@ -8,7 +8,7 @@ import { catchAsync } from "../../utils/catchAsync";
 import { User } from './user.model';
 import { sendResponse } from "../../utils/sendResponse";
 import { verifyToken } from "../../utils/jwt";
-import { envVars } from "../../../config/env";
+import { envVars } from "../../config/env";
 import { JwtPayload } from "jsonwebtoken";
 
 
