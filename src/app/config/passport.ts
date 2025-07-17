@@ -9,11 +9,15 @@ import bcryptjs from "bcryptjs"
 // import passport from "passport"
 
 passport.use(
-    new LocalStrategy({ usernameField:"email",passwordField:"password"},async(email:string,password:string,done:VerifyCallback)=>{
+    new LocalStrategy({ usernameField:"email",passwordField:"password"},async(email:string,password:string,done)=>{
         try {
             const isUserExist = await User.findOne({email})
             if(!isUserExist){
                 return done(null,false,{message:"User Does not exist"})
+            }
+            const isGoogleAuthenticated = isUserExist.auths.some(providerObjects=>providerObjects.provider == "google")
+            if(isGoogleAuthenticated){
+                return done(null,false,{message:"you have authenticated through google.so if you want to login with credentials , then at first login with google and set a password for your Gmail and then you can login with email and  password "})
             }
 
              const isPasswordMatched = await bcryptjs.compare(password as string,isUserExist.password as string)
@@ -21,6 +25,7 @@ passport.use(
     if(!isPasswordMatched){
           return done(null,false,{message:"password does not match"})
     }
+
     return done(null,isUserExist)
             
         } catch (error) {

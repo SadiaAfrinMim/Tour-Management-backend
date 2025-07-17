@@ -9,6 +9,7 @@ import { setAuthCookie } from "../../utils/setCookie";
 import { createUserTokens } from "../../utils/userToken";
 import { envVars } from "../../config/env";
 import { JwtPayload } from "jsonwebtoken";
+import passport from "passport";
 
 
 
@@ -16,7 +17,7 @@ import { JwtPayload } from "jsonwebtoken";
 
 const credentialsLogin = catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
 //   const result = await UserServices. getAllUser();
-
+passport.authenticate()
 
 const loginInfo = await AuthServices.credentialsLogin(req.body)
 
