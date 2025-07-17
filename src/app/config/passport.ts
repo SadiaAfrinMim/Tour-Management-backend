@@ -3,11 +3,39 @@ import { Strategy as GoogleStrategy, Profile, VerifyCallback } from "passport-go
 import { envVars } from "./env";
 import { User } from "../modules/user/user.model";
 import { Role } from "../modules/user/user.interface";
+import { Strategy as LocalStrategy } from "passport-local";
+import bcryptjs from "bcryptjs"
+
+// import passport from "passport"
+
+passport.use(
+    new LocalStrategy({ usernameField:"email",passwordField:"password"},async(email:string,password:string,done:VerifyCallback)=>{
+        try {
+            const isUserExist = await User.findOne({email})
+            if(!isUserExist){
+                return done(null,false,{message:"User Does not exist"})
+            }
+
+             const isPasswordMatched = await bcryptjs.compare(password as string,isUserExist.password as string)
+
+    if(!isPasswordMatched){
+          return done(null,false,{message:"password does not match"})
+    }
+    return done(null,isUserExist)
+            
+        } catch (error) {
+            console.log(error)
+            done(error)
+            
+        }
+
+    })
+)
 
 
 passport.use(
     new GoogleStrategy({
-        clientID:envVars.GOOGLE_CLIENT_SECRET,
+       clientID: envVars.GOOGLE_CLIENT_ID,
         clientSecret:envVars.GOOGLE_CLIENT_SECRET,
         callbackURL:envVars.GOOGLE_CALLBACK_URL
         
@@ -67,3 +95,30 @@ passport.deserializeUser(async(id:string,done:any)=>{
         done(error)
     }
 })
+
+// passport.use(
+//   new GoogleStrategy(
+//     {
+//       clientID: envVars.GOOGLE_CLIENT_ID,
+//       clientSecret: envVars.GOOGLE_CLIENT_SECRET,
+//       callbackURL: envVars.GOOGLE_CALLBACK_URL,
+//       passReqToCallback: false
+//     },
+//     async (accessToken, refreshToken, profile, done) => {
+//       try {
+//         // const user = await findOrCreateUser(profile)
+//         return done(null, user)
+//       } catch (error) {
+//         return done(error)
+//       }
+//     }
+//   )
+// )
+
+// passport.serializeUser((user, done) => {
+//   done(null, user)
+// })
+
+// passport.deserializeUser((user, done) => {
+//   done(null, user as any)
+// })
