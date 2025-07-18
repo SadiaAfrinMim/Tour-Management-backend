@@ -6,6 +6,24 @@ import { IsActive, Role } from "./user.interface";
           .string({invalid_type_error:"Name must be string"})
           .min(2,{message:"Name too short .Minimum 2 character long"})
           .max(50,{message:"Name too long"}),
+
+          // name:z.object({
+          //   firstName:z.string({invalid_type_error:"Name must be string"})
+          // .min(2,{message:"Name too short .Minimum 2 character long"})
+          // .max(50,{message:"Name too long"}),
+          //  lastName:z.object({
+          //   nickName:z.string({invalid_type_error:"Name must be string"})
+          // .min(2,{message:"Name too short .Minimum 2 character long"})
+          // .max(50,{message:"Name too long"}),
+           
+          // }),
+          // surName:z.string({invalid_type_error:"Name must be string"})
+          // .min(2,{message:"Name too short .Minimum 2 character long"})
+          // .max(50,{message:"Name too long"}),
+           
+          
+
+          //  }),
             email:z
             .string({invalid_type_error:"Email must be string"}).email({message:"Invalid email address format."})
             .min(8,{message:"password must be at least 8 characters long"})

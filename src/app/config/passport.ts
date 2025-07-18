@@ -12,13 +12,21 @@ passport.use(
     new LocalStrategy({ usernameField:"email",passwordField:"password"},async(email:string,password:string,done)=>{
         try {
             const isUserExist = await User.findOne({email})
+            // if(!isUserExist){
+            //     return done(null,false,{message:"User Does not exist"})
+            // }
+
             if(!isUserExist){
-                return done(null,false,{message:"User Does not exist"})
+                return done("user does not exist")
             }
             const isGoogleAuthenticated = isUserExist.auths.some(providerObjects=>providerObjects.provider == "google")
-            if(isGoogleAuthenticated){
+            if(isGoogleAuthenticated && !isUserExist.password){
                 return done(null,false,{message:"you have authenticated through google.so if you want to login with credentials , then at first login with google and set a password for your Gmail and then you can login with email and  password "})
             }
+
+            // if(isGoogleAuthenticated){
+            //     return done("you have authenticated through google.so if you want to login with credentials , then at first login with google and set a password for your Gmail and then you can login with email and  password ")
+            // }
 
              const isPasswordMatched = await bcryptjs.compare(password as string,isUserExist.password as string)
 
@@ -101,29 +109,3 @@ passport.deserializeUser(async(id:string,done:any)=>{
     }
 })
 
-// passport.use(
-//   new GoogleStrategy(
-//     {
-//       clientID: envVars.GOOGLE_CLIENT_ID,
-//       clientSecret: envVars.GOOGLE_CLIENT_SECRET,
-//       callbackURL: envVars.GOOGLE_CALLBACK_URL,
-//       passReqToCallback: false
-//     },
-//     async (accessToken, refreshToken, profile, done) => {
-//       try {
-//         // const user = await findOrCreateUser(profile)
-//         return done(null, user)
-//       } catch (error) {
-//         return done(error)
-//       }
-//     }
-//   )
-// )
-
-// passport.serializeUser((user, done) => {
-//   done(null, user)
-// })
-
-// passport.deserializeUser((user, done) => {
-//   done(null, user as any)
-// })
