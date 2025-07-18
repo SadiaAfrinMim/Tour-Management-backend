@@ -4,58 +4,27 @@ import { NextFunction, Request, Response } from "express"
 import { envVars } from "../config/env"
 import AppError from "../errorhelpers/AppError";
 import mongoose from "mongoose";
-import { StatusCodes } from "http-status-codes";
+
 import { string } from "zod";
 
-interface TErrorSources = {
-    path:string,
-    message: string,
-
-}
-
-
-const handleDuplicateError =(err:any)=>{
-     const marchedArray = err.message.match(/"([^"]*)"/)
-     return{
-        statusCode: 400,
-        message:`${marchedArray[1]} already exists`
-     }
-}
+import { handleDuplicateError } from "../helpers/handleDuplicateError";
+import { handlerCastError } from "../helpers/handleCastError";
+import { handleZodError } from "../helpers/handleZodError";
+import { handleValidationError } from "../helpers/handleValidationError";
+import { TErrorSources } from "../interfaces/error.types";
 
 
-const handlerCastError =(err:mongoose.Error.CastError)=>{
-    return{
-         statusCode :400,
-        message:"Invalid MongoDB  object ID.please provide a valid id"
-    }
 
-}
 
-const handleValidationError =(err:mongoose.Error.ValidationError)=>{
-    const errorSources:TErrorSources[] =[]
-      statusCode = 400;
-        const errors= Object.values(err.errors)
-      
-        errors.forEach((errorObject: any) =>errorSources.push({
-            path:errorObject.path,
-            message:errorObject.message
-        }))
-       
-        
-     
-        return{ 
-            StatusCode: 400,
-            message:"validation error"
-
-        }
-    
-}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const globalErrorHandler=(err:any ,req:Request,res:Response,next:NextFunction)=>{
-    console.log(err)
+    if(envVars.NODE_ENV==='development'){
+        console.log(err)
+    }
+ 
 
-      const errorSources:any = [
+     let errorSources:TErrorSources[] = [
         //     {
         //     path:"isDeleted",
         //     message:"Cast Failed"
@@ -81,28 +50,20 @@ export const globalErrorHandler=(err:any ,req:Request,res:Response,next:NextFunc
     }
 
     else if (err.name === "ZodError"){
-        statusCode=400
-        message="zod error"
-        console.log(err.issues)
-        err.issues.forEach((issue:any)=>{
-         errorSources.push({
-                path:issue.path[issue.path.length -1],
-                message: issue.message
-            })
-        })
+       const simplifiedError = handleZodError(err)
+       statusCode = simplifiedError.StatusCode
+       message = simplifiedError.message
+       errorSources = simplifiedError.errorSources
+        
     }
-    else if(err.name === 'ValidationError'){
+    else if(err.name === "ValidationError"){
         const simplifiedError = handleValidationError(err)
-        statusCode = simplifiedError.StatusCode
-        const errors= Object.values(err.errors)
-      
-        errors.forEach((errorObject: any) =>errorSources.push({
-            path:errorObject.path,
-            message:errorObject.message
-        }))
+        statusCode = simplifiedError.statusCode
+        errorSources = simplifiedError.errorSources as TErrorSources[]
+        message=simplifiedError.message
        
         
-        message="validation error"
+       
     }
    else if(err instanceof AppError){
         statusCode = err.statusCode
@@ -117,7 +78,7 @@ export const globalErrorHandler=(err:any ,req:Request,res:Response,next:NextFunc
         success:false,
         message,
         errorSources,
-        err,
+        err:envVars.NODE_ENV==='development'?err:null,
         stack: envVars.NODE_ENV==="development"?err.stack:null
     })
 }
