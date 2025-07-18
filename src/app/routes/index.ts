@@ -14,7 +14,15 @@ const moduleRoutes = [{
     path: "/auth",
     route:AuthRoutes
 
-}
+},
+{
+    path:"/division",
+    route:
+},
+{
+    path:"/tour",
+    route:
+},
 ]
 
 moduleRoutes.forEach((route)=>{
