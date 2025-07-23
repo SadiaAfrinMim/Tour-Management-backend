@@ -1,16 +1,29 @@
+import { Tour } from "../tour/tour.model";
 import { IDivision } from "./division.interface";
 import { Division } from "./division.model";
 
 
 const createDivision = async(payload:IDivision)=>{
-    const existingDivision = await Division.findOne({name:payload.name});
-    if(existingDivision){
-        throw new Error("A division with this name already exists")
+    const baseSlug = payload.slug.toLocaleLowerCase().split(" ").join("-");
+    let slug =`${baseSlug}-division`
+    console.log(slug)
+    let counter = 0
+
+    while(await Division.exists({slug})){
+        slug = `${slug}-${counter++}`
     }
+    // const existingDivision = await Division.findOne({name:payload.name});
+    // if(existingDivision){
+    //     throw new Error("A division with this name already exists")
+    // }
 
-    const division = await Division.create(payload)
+    // const division = await Division.create(payload)
 
-    return division
+    // return division
+
+    payload.slug = slug;
+    const tour = await Tour.create(payload)
+    return tour
 }
 
 const getAllDivisions = async()=>{
@@ -44,6 +57,19 @@ const updateDivision = async(id:string,payload:Partial<IDivision>)=>{
         })
         if(duplicateDivision){
             throw new Error("A division with this name already exists.")
+        }
+
+        if(payload.name){
+             const baseSlug = payload.name.toLocaleLowerCase().split(" ").join("-");
+    let slug =`${baseSlug}-division`
+    console.log(slug)
+    let counter = 0
+
+    while(await Division.exists({slug})){
+        slug = `${slug}-${counter++}`
+    }
+    payload.slug = slug
+
         }
 
         const updateDivision = await Division.findByIdAndUpdate(id,payload,{new: true,runValidators:true})

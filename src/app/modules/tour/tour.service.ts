@@ -128,6 +128,20 @@ const getAllTours = async (query: Record<string, string>) => {
 const updateTour = async (id: string, payload: Partial<ITour>) => {
 
     const existingTour = await Tour.findById(id);
+    
+            if(payload.title){
+                 const baseSlug = payload.title.toLocaleLowerCase().split(" ").join("-");
+        let slug =`${baseSlug}-division`
+        console.log(slug)
+        let counter = 0
+    
+        while(await Tour.exists({slug})){
+            slug = `${slug}-${counter++}`
+        }
+        payload.slug = slug
+    
+            }
+    
 
     if (!existingTour) {
         throw new Error("Tour not found.");
