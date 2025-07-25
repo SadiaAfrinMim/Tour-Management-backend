@@ -129,18 +129,18 @@ const updateTour = async (id: string, payload: Partial<ITour>) => {
 
     const existingTour = await Tour.findById(id);
     
-            if(payload.title){
-                 const baseSlug = payload.title.toLocaleLowerCase().split(" ").join("-");
-        let slug =`${baseSlug}-division`
-        console.log(slug)
-        let counter = 0
+        //     if(payload.title){
+        //          const baseSlug = payload.title.toLocaleLowerCase().split(" ").join("-");
+        // let slug =`${baseSlug}-division`
+        // console.log(slug)
+        // let counter = 0
     
-        while(await Tour.exists({slug})){
-            slug = `${slug}-${counter++}`
-        }
-        payload.slug = slug
+        // while(await Tour.exists({slug})){
+        //     slug = `${slug}-${counter++}`
+        // }
+        // payload.slug = slug
     
-            }
+        //     }
     
 
     if (!existingTour) {
