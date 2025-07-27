@@ -12,15 +12,15 @@ const createTour = async (payload: ITour) => {
         throw new Error("A tour with this title already exists.");
     }
 
-    // const baseSlug = payload.title.toLowerCase().split(" ").join("-")
-    // let slug = `${baseSlug}`
+    const baseSlug = payload.title.toLowerCase().split(" ").join("-")
+    let slug = `${baseSlug}`
 
-    // let counter = 0;
-    // while (await Tour.exists({ slug })) {
-    //     slug = `${slug}-${counter++}` // dhaka-division-2
-    // }
+    let counter = 0;
+    while (await Tour.exists({ slug })) {
+        slug = `${slug}-${counter++}` // dhaka-division-2
+    }
 
-    // payload.slug = slug;
+    payload.slug = slug;
 
     const tour = await Tour.create(payload)
 
@@ -129,18 +129,18 @@ const updateTour = async (id: string, payload: Partial<ITour>) => {
 
     const existingTour = await Tour.findById(id);
     
-        //     if(payload.title){
-        //          const baseSlug = payload.title.toLocaleLowerCase().split(" ").join("-");
-        // let slug =`${baseSlug}-division`
-        // console.log(slug)
-        // let counter = 0
+            if(payload.title){
+                 const baseSlug = payload.title.toLocaleLowerCase().split(" ").join("-");
+        let slug =`${baseSlug}-division`
+        console.log(slug)
+        let counter = 0
     
-        // while(await Tour.exists({slug})){
-        //     slug = `${slug}-${counter++}`
-        // }
-        // payload.slug = slug
+        while(await Tour.exists({slug})){
+            slug = `${slug}-${counter++}`
+        }
+        payload.slug = slug
     
-        //     }
+            }
     
 
     if (!existingTour) {
