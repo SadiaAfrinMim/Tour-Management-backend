@@ -49,6 +49,7 @@ const deleteTour = catchAsync(async (req: Request, res: Response) => {
     });
 });
 const getAllTourTypes = catchAsync(async (req: Request, res: Response) => {
+ 
     const result = await TourService.getAllTourTypes();
     sendResponse(res, {
         statusCode: 200,

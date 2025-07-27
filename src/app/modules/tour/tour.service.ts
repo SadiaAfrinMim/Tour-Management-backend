@@ -1,8 +1,6 @@
 
-
 import { QueryBuilder } from "../../utils/QueryBuilder";
 import { tourSearchableFields } from "./tour.constant";
-
 import { ITour, ITourType } from "./tour.interface";
 import { Tour, TourType } from "./tour.model";
 
@@ -128,36 +126,22 @@ const getAllTours = async (query: Record<string, string>) => {
 const updateTour = async (id: string, payload: Partial<ITour>) => {
 
     const existingTour = await Tour.findById(id);
-    
-            if(payload.title){
-                 const baseSlug = payload.title.toLocaleLowerCase().split(" ").join("-");
-        let slug =`${baseSlug}-division`
-        console.log(slug)
-        let counter = 0
-    
-        while(await Tour.exists({slug})){
-            slug = `${slug}-${counter++}`
-        }
-        payload.slug = slug
-    
-            }
-    
 
     if (!existingTour) {
         throw new Error("Tour not found.");
     }
 
-    // if (payload.title) {
-    //     const baseSlug = payload.title.toLowerCase().split(" ").join("-")
-    //     let slug = `${baseSlug}`
+    if (payload.title) {
+        const baseSlug = payload.title.toLowerCase().split(" ").join("-")
+        let slug = `${baseSlug}`
 
-    //     let counter = 0;
-    //     while (await Tour.exists({ slug })) {
-    //         slug = `${slug}-${counter++}` // dhaka-division-2
-    //     }
+        let counter = 0;
+        while (await Tour.exists({ slug })) {
+            slug = `${slug}-${counter++}` // dhaka-division-2
+        }
 
-    //     payload.slug = slug
-    // }
+        payload.slug = slug
+    }
 
     const updatedTour = await Tour.findByIdAndUpdate(id, payload, { new: true });
 
@@ -175,7 +159,7 @@ const createTourType = async (payload: ITourType) => {
         throw new Error("Tour type already exists.");
     }
 
-    return await TourType.create({ name });
+    return await TourType.create({ name:payload.name });
 };
 const getAllTourTypes = async () => {
     return await TourType.find();
