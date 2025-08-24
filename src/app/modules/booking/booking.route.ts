@@ -3,8 +3,9 @@ import express from "express";
 import { checkAuth } from "../../middlewares/checkAuth";
 import { validateRequest } from "../../middlewares/validateRequest";
 import { Role } from "../user/user.interface";
-import { BookingController } from "./booking.controller";
+
 import { createBookingZodSchema, updateBookingStatusZodSchema } from "./booking.validation";
+import { BookingController } from "./booking.contoller";
 
 const router = express.Router();
 
