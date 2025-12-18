@@ -41,6 +41,7 @@ const getSingleDivision = catchAsync(async(req:Request,res:Response)=>{
 const updateDivision = catchAsync(async(req:Request,res:Response)=>{
     const id = req.params.id;
     const result = await DivisionService.updateDivision(id,req.body)
+    console.log(req.body)
     sendResponse(res,{
         statusCode:200,
         success:true,

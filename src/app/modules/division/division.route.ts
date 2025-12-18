@@ -2,7 +2,7 @@ import { Router } from "express";
 import { checkAuth } from "../../middlewares/checkAuth";
 import { Role } from "../user/user.interface";
 import { validateRequest } from "../../middlewares/validateRequest";
-import { createDivisionSchema, updateDivisionSchema } from "./division.validation";
+import {  createDivisionSchema, updateDivisionSchema } from "./division.validation";
 import { DivisionController } from "./division.controller";
 
 

@@ -9,9 +9,10 @@ import { string } from "zod";
 
 import { handleDuplicateError } from "../helpers/handleDuplicateError";
 import { handlerCastError } from "../helpers/handleCastError";
-import { handleZodError } from "../helpers/handleZodError";
+;
 import { handleValidationError } from "../helpers/handleValidationError";
 import { TErrorSources } from "../interfaces/error.types";
+import { handlerZodError } from "../helpers/handleZodError";
 
 
 
@@ -20,9 +21,10 @@ import { TErrorSources } from "../interfaces/error.types";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const globalErrorHandler=(err:any ,req:Request,res:Response,next:NextFunction)=>{
     if(envVars.NODE_ENV==='development'){
-        console.log(err)
+        console.log(String(err?.name ?? ""));
+console.log(String(err?.message ?? ""));
+
     }
- 
 
      let errorSources:TErrorSources[] = [
         //     {
@@ -50,10 +52,10 @@ export const globalErrorHandler=(err:any ,req:Request,res:Response,next:NextFunc
     }
 
     else if (err.name === "ZodError"){
-       const simplifiedError = handleZodError(err)
-       statusCode = simplifiedError.StatusCode
+       const simplifiedError = handlerZodError(err)
+       statusCode = simplifiedError.statusCode
        message = simplifiedError.message
-       errorSources = simplifiedError.errorSources
+       errorSources = simplifiedError.errorSources as TErrorSources[]
         
     }
     else if(err.name === "ValidationError"){

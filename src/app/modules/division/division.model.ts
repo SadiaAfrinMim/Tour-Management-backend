@@ -15,9 +15,9 @@ const divisionSchema =  new Schema<IDivision>({
  divisionSchema.pre("save",async function(next){
 
    if( this.isModified("name")){
-       const baseSlug = this.name.toLocaleLowerCase().split(" ").join("-");
+    const baseSlug = this.name.toLocaleLowerCase().split(" ").join("-");
     let slug =`${baseSlug}-division`
-    console.log(slug)
+   
     let counter = 0
 
     while(await Division.exists({slug})){
@@ -30,10 +30,10 @@ const divisionSchema =  new Schema<IDivision>({
 
 divisionSchema.pre("findOneAndUpdate",async function(next){
     const division =  this.getUpdate() as IDivision
-      if(division.name){
-             const baseSlug = division.name.toLocaleLowerCase().split(" ").join("-");
+    if(division.name){
+    const baseSlug = division.name.toLocaleLowerCase().split(" ").join("-");
     let slug =`${baseSlug}-division`
-    console.log(slug)
+  
     let counter = 0
 
     while(await Division.exists({slug})){
