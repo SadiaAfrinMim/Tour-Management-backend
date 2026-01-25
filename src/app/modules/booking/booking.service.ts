@@ -11,16 +11,55 @@ import { BOOKING_STATUS, IBooking } from "./booking.interface";
 import { Booking } from "./booking.model";
 import { ISSLCommerz } from "../../sslCommerz/sslCommerz.interface";
 import AppError from "../../errorhelpers/AppError";
+import { getTransactionId } from "../../utils/getTransectionid";
 
-const getTransactionId = () => {
-    return `tran_${Date.now()}_${Math.floor(Math.random() * 1000)}`
-}
+
 
 /**
  * Duplicate DB Collections / replica
  * 
  * Relica DB -> [ Create Booking -> Create Payment ->  Update Booking -> Error] -> Real DB
+ * 
+ * 
  */
+
+
+// const createBooking = async(payload:Partial<IBooking>,userId:string)=>{
+//     const transactionId = getTransactionId()
+//     const user = await User.findById(userId);
+//     console.log("userdaw",user,user?.phone)
+
+//         if (!user?.phone || !user.address) {
+//             throw new AppError(httpStatus.BAD_REQUEST, "Please Update Your Profile to Book a Tour.")
+//         }
+//           const tour = await Tour.findById(payload.tour).select("costFrom")
+
+//         if (!tour?.costFrom) {
+//             throw new AppError(httpStatus.BAD_REQUEST, "No Tour Cost Found!")
+//         }
+
+//         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+//         const amount = Number(tour.costFrom)*Number(payload.guestCount!)
+
+//     const booking = await Booking.create({
+//         user:userId,
+//         status:BOOKING_STATUS.PENDING,
+//         ...payload
+//     })
+//     const payment = await Payment.create({
+//         booking:booking._id,
+//         status:PAYMENT_STATUS.UNPAID,
+//         transactionId: transactionId,
+//         amount:amount
+//     })
+//     const updateBooking = await Booking.findByIdAndUpdate(booking._id,{payment:payment._id},{new:true,runValidators: true})
+
+//     return updateBooking
+
+// }
+
+
+// !final term createbooking
 
 const createBooking = async (payload: Partial<IBooking>, userId: string) => {
     const transactionId = getTransactionId()
@@ -99,9 +138,9 @@ const createBooking = async (payload: Partial<IBooking>, userId: string) => {
     }
 };
 
-// Frontend(localhost:5173) - User - Tour - Booking (Pending) - Payment(Unpaid) -> SSLCommerz Page -> Payment Complete -> Backend(localhost:5000/api/v1/payment/success) -> Update Payment(PAID) & Booking(CONFIRM) -> redirect to frontend -> Frontend(localhost:5173/payment/success)
+//Frontend(localhost:5173) - User - Tour - Booking (Pending) - Payment(Unpaid) -> SSLCommerz Page -> Payment Complete -> Backend(localhost:5000/api/v1/payment/success) -> Update Payment(PAID) & Booking(CONFIRM) -> redirect to frontend -> Frontend(localhost:5173/payment/success)
 
-// Frontend(localhost:5173) - User - Tour - Booking (Pending) - Payment(Unpaid) -> SSLCommerz Page -> Payment Fail / Cancel -> Backend(localhost:5000) -> Update Payment(FAIL / CANCEL) & Booking(FAIL / CANCEL) -> redirect to frontend -> Frontend(localhost:5173/payment/cancel or localhost:5173/payment/fail)
+//Frontend(localhost:5173) - User - Tour - Booking (Pending) - Payment(Unpaid) -> SSLCommerz Page -> Payment Fail / Cancel -> Backend(localhost:5000) -> Update Payment(FAIL / CANCEL) & Booking(FAIL / CANCEL) -> redirect to frontend -> Frontend(localhost:5173/payment/cancel or localhost:5173/payment/fail)
 
 const getUserBookings = async () => {
 

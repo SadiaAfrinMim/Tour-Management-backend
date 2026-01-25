@@ -61,8 +61,9 @@ const successPayment = async (query: Record<string, string>) => {
             .findByIdAndUpdate(
                 updatedPayment?.booking,
                 { status: BOOKING_STATUS.COMPLETE },
-                { runValidators: true, session }
+                {  runValidators: true, session: session }
             )
+            
 
         await session.commitTransaction(); //transaction
         session.endSession()

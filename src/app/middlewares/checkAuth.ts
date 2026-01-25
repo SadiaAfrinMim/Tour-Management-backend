@@ -28,6 +28,9 @@ import { IsActive } from "../modules/user/user.interface";
      if(isUserExist.isDeleted ){
         throw new AppError(httpStatus.BAD_REQUEST,"user is delet")
     }
+    if(!isUserExist.isVerified){
+        throw new AppError(403,"user is not verified")
+    }
       
 
     if(!verifiedToken){
